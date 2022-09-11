@@ -24,14 +24,14 @@
                     <button class="btn btn-secondary" type="submit">
                         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-arrow-up-short" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M8 12a.5.5 0 0 0 .5-.5V5.707l2.146 2.147a.5.5 0 0 0 .708-.708l-3-3a.5.5 0 0 0-.708 0l-3 3a.5.5 0 1 0 .708.708L7.5 5.707V11.5a.5.5 0 0 0 .5.5z"/>
-                        </svg> <span style="font-size: 10px;">Upvote</span>
+                        </svg> <span style="font-size: 10px;">Upvote</span> {{upvotes}}
                     </button>
                 </form>
                 <form class="col-lg-2 mt-3" action="{% url 'vote' blog.id 'downvote' %}">
                     <button class="btn btn-secondary" type="submit">
                         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-arrow-down-short" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
-                        </svg> <span style="font-size: 10px;">Downvote</span>
+                        </svg> <span style="font-size: 10px;">Downvote</span> {{downvotes}}
                     </button>
                 </form>
             </div>
@@ -60,7 +60,7 @@
                         <div class="fw-bold">{{comment.user.username}}</div>
                         {{comment.comment}}
                         <!-- reply btn-->
-                        <button style="display: block;" class="btn btn-light text-secondary" onclick="_focus('anurag', 0, {{comment.id}})">Reply</button>
+                        <button style="display: block;" class="btn btn-light text-secondary" onclick="_focus('{{comment.user.username}}', 0, {{comment.id}})">Reply</button>
                         <!-- reply btn end-->
                         {% for reply in replies %}
                             <!-- Child comment -->
@@ -70,7 +70,7 @@
                                     <div class="fw-bold">{{reply.user.username}}</div>
                                         {{reply.reply}}
                                     <!-- reply btn-->
-                                    <button style="display: block;" class="btn btn-light text-secondary" onclick="_focus('ayushi', 1, {{comment.id}})">Reply</button>
+                                    <button style="display: block;" class="btn btn-light text-secondary" onclick="_focus('{{comment.user.username}}', 1, {{comment.id}})">Reply</button>
                                     <!-- reply btn end-->
                                 </div>
                             </div>

@@ -6,32 +6,42 @@ from django.contrib.auth.models import User
 
 
 # Create your views here.
+def home(request):
+    blogs = BlogPost.objects.all()
+    return render(request, "app/homepage.html", {'blogs':blogs, "user": request.user, "top_10_blogs": blogs[:10]})
 
 def view_blog(request, blog_id):
-    blog = BlogPost.objects.get(id=blog_id)
-    # comments = Comments.objects.get(post=blog.id)
-    print({comment: [reply for reply in comment.replyofcomments_set.all()] for comment in blog.comments_set.all()})
-    return render(request, "app/view_blog.html", {
-            'blog': blog, 
-            "user" : request.user, 
-            "comments": {
-                comment: [reply for reply in comment.replyofcomments_set.all()] for comment in blog.comments_set.all()
-                },
-            "upvotes": Vote.objects.get()
-            }
-        )
+    try:
+        blog = BlogPost.objects.get(id=blog_id)
+        top_blogs = BlogPost.objects.all().order_by('date_created')[:10]
+        return render(request, "app/view_blog.html", {
+                'blog': blog, 
+                "user" : request.user, 
+                "top_10_blogs": top_blogs,
+                "comments": {
+                    comment: [reply for reply in comment.replyofcomments_set.all()] for comment in blog.comments_set.all()
+                    },
+                "upvotes": Vote.objects.filter(post=blog, vote_type="upvote").count(),
+                "downvotes": Vote.objects.filter(post=blog, vote_type="downvote").count(),
+                }
+            )
+    except:
+        return redirect("home")
 
 def post_blog(request):
-    form  = BlogPostForm()
-    if request.method == "POST":
-        form = BlogPostForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect("/view_blog")
-        else:
-            return HttpResponse("Gadbad h re vaba")
-    context = {"form":form}
-    return render(request, "app/blog_post.html", context)
+    if request.user.is_authenticated and request.user.is_superuser:
+        form  = BlogPostForm()
+        if request.method == "POST":
+            form = BlogPostForm(request.POST, request.FILES)
+            if form.is_valid():
+                form.save()
+                return redirect("home")
+            else:
+                return HttpResponse("Gadbad h re vaba")
+        context = {"form":form, "user" : request.user, }
+        return render(request, "app/blog_post.html", context)
+    else:
+        return HttpResponse("Login as Super User.<a href='/login/login_user/'>Login</a>")
 
 
 def register(request):

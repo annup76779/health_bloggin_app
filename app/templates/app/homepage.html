@@ -1,0 +1,14 @@
+{% extends 'app/index.html'%}
+{% comment %} {% load static %} {% endcomment %}
+{% block content %}
+
+{% for blog in blogs %}
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h6>{{blog.title}}</h6>
+        <a href="{% url 'view_blog' blog.id %}" class="btn btn-primary">Read Blog</a>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
