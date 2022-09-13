@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 class BlogPostForm(forms.ModelForm):
     class Meta:
         model  = BlogPost
-        fields = ("image", "title", 'body')
+        fields = ("image", "title", 'category', 'body')
 
         widgets = {
             "image": forms.FileInput(attrs={
@@ -17,6 +17,11 @@ class BlogPostForm(forms.ModelForm):
                 'placeholder': 'Enter the title of the blog...',
                 "class": 'form-control'
                 }),
+
+            "category": forms.Select(attrs={
+                "class": "form-control"
+            }),
+
             'body': forms.TextInput(attrs={
                 "class": 'form-control',
                 "type": "hidden"

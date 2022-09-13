@@ -6,12 +6,11 @@
     <!-- Post header-->
     <header class="mb-4">
         <!-- Post title-->
-        <h1 class="fw-bolder mb-1">{{blog.title}}</h1>
+        <h1 class="fw-bolder mb-1 contents_title_hovered ">{{blog.title}}</h1>
         <!-- Post meta content-->
-        <div class="text-muted fst-italic mb-2">Posted on {{blog.date_created}} by Admin</div>
+        <div class="fst-italic mb-2 contents_title_hovered">Posted on {{blog.date_created}} by Admin</div>
         <!-- Post categories-->
-        <a class="badge bg-secondary text-decoration-none link-light" href="#!">Health</a>
-        <a class="badge bg-secondary text-decoration-none link-light" href="#!">Self Care</a>
+        <a class="badge bg-secondary text-decoration-none link-light" href="{% url 'by_category' %}?category={{blog.category.id}}">{{blog.category}}</a>
     </header>
     <!-- Preview image figure-->
     <figure class="mb-4"><img class="img-fluid rounded" src="{{ blog.image.url }}" alt="..." /></figure>

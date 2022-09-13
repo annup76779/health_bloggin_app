@@ -9,12 +9,28 @@
         <title>Blog Post - Start Bootstrap Template</title>
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+        <style>
+            .contents_div_hovered a{
+                text-decoration: none; cursor: pointer; color: black;
+            }
+            .contents_div_hovered:hover a{
+                color: grey;
+            }
+
+            .contents_title_hovered{
+                color:grey;
+            }
+            .contents_title_hovered:hover{
+                color: black;
+            }
+        </style>
     </head>
     <body>
         <!-- Responsive navbar-->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container">
-                <a class="navbar-brand" href="#!">Start Bootstrap</a>
+                <a class="navbar-brand" href="#!">HealthGate</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -47,14 +63,25 @@
                 <div class="col-lg-4">
                     <!-- Side widget-->
                     <div class="card mb-4">
-                        <div class="card-header">New Products</div>
+                        <div class="card-header">New Blogs</div>
                         {% for top_product in top_10_blogs %}
-                            <div class="card-body">
-                                <a href="{% url 'view_blog' top_product.id %}" >{{top_product}}</a>
+                            <div class="card-body contents_div_hovered ">
+                                <a href="{% url 'view_blog' top_product.id %}">{{top_product}}</a>
                             </div>
                         {% endfor %}
                     </div>
+                    <!-- Category widgets-->
+                        <!-- Side widget-->
+                        <div class="card mb-4">
+                            <div class="card-header">Categories</div>
+                            {% for category in categories %}
+                                <div class="card-body contents_div_hovered">
+                                    <a href="{% url 'by_category' %}?category={{category.id}}">{{category}}</a>
+                                </div>
+                            {% endfor %}
+                        </div>
                 </div>
+
             </div>
         </div>
         <!-- Footer-->

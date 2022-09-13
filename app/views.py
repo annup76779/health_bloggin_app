@@ -8,21 +8,24 @@ from django.contrib.auth.models import User
 # Create your views here.
 def home(request):
     blogs = BlogPost.objects.all()
-    return render(request, "app/homepage.html", {'blogs':blogs, "user": request.user, "top_10_blogs": blogs[:10]})
+    categories = Categories.objects.all()
+    return render(request, "app/homepage.html", {'blogs':blogs, "user": request.user, "top_10_blogs": blogs[:10], "categories": categories})
 
 def view_blog(request, blog_id):
     try:
         blog = BlogPost.objects.get(id=blog_id)
         top_blogs = BlogPost.objects.all().order_by('date_created')[:10]
+        categories = Categories.objects.all()
         return render(request, "app/view_blog.html", {
                 'blog': blog, 
                 "user" : request.user, 
                 "top_10_blogs": top_blogs,
                 "comments": {
-                    comment: [reply for reply in comment.replyofcomments_set.all()] for comment in blog.comments_set.all()
+                    comment: [reply for reply in comment.replyofcomments_set.filter(isApproved = True).all()] for comment in blog.comments_set.filter(isApproved = True).all()
                     },
                 "upvotes": Vote.objects.filter(post=blog, vote_type="upvote").count(),
                 "downvotes": Vote.objects.filter(post=blog, vote_type="downvote").count(),
+                "categories": categories
                 }
             )
     except:
@@ -97,3 +100,14 @@ def comment_post(request, post_id):
             return HttpResponse("Method not allowed")
     else:
         return redirect("login_user")
+
+
+def by_category(request):
+    try:
+        category = int(request.GET.get("category"))
+    except ValueError:
+        redirect("home")
+    blogPost_with_given_category = BlogPost.objects.filter(category=category).all()
+    top_blogs = BlogPost.objects.all().order_by('date_created')[:10]
+    categories = Categories.objects.all()
+    return render(request, "app/homepage.html", {'blogs':blogPost_with_given_category, "user": request.user, "top_10_blogs": top_blogs, "categories": categories})
