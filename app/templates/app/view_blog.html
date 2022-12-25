@@ -18,6 +18,7 @@
     <section class="mb-5">
         {{blog.body | safe}}
         <div class="col-lg-12">
+            <div id="vote_alert_box"></div>
             <div class="row">
                 <form class="col-lg-2 mt-3" style="display:inline;" action="{% url 'vote' blog.id 'upvote' %}">
                     <button class="btn btn-secondary" type="submit">
@@ -26,7 +27,8 @@
                         </svg> <span style="font-size: 10px;">Upvote</span> {{upvotes}}
                     </button>
                 </form>
-                <form class="col-lg-2 mt-3" action="{% url 'vote' blog.id 'downvote' %}">
+                <!-- <form class="col-lg-2 mt-3" action="{% url 'vote' blog.id 'downvote' %}"> -->
+                <form class="col-lg-2 mt-3" onsubmit="event.preventDefault(); downvote();">
                     <button class="btn btn-secondary" type="submit">
                         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="currentColor" class="bi bi-arrow-down-short" viewBox="0 0 16 16">
                             <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v5.793l2.146-2.147a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 1 1 .708-.708L7.5 10.293V4.5A.5.5 0 0 1 8 4z"/>
@@ -45,9 +47,19 @@
             <!-- Comment form-->
             <form class="mb-4" method="post" action="{% url 'comment_post' blog.id %}">
                 {% csrf_token %}
+<!--                form for both comment and reply to the comment-->
                 <input type="hidden" id="is_reply_box" name="is_reply_box">
                 <input type="hidden" id="comment_id_box" name="comment_id_box">
                 <textarea id="comment-box" class="form-control" name="actual_comment" rows="3" placeholder="Join the discussion and leave a comment!"></textarea>
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                        <li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>
+                            {{ message }}
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
                 <button type="submit" class= "text-right btn btn-primary mt-3">Post Comment</button>
             </form>
             {% for comment, replies in comments.items %}
@@ -93,6 +105,43 @@
         comment_id_box.value = comment_id;
         comment_box.value = "@"+name + " ";
         comment_box.focus();
+    }
+
+    function remove_alert(element_to_be_removed){
+        // Remove the element in 3 seconds
+        setTimeout(function(el){
+            el.remove();
+        }, 3000, element_to_be_removed);
+    }
+    window.onload = function(){
+        remove_alert(document.querySelector(".error"));
+        // remove_alert(document.querySelector(".success"));
+        // remove_alert(document.querySelector(".warning"));
+    }
+
+    async function downvote(){
+        await fetch("/downvote/1/downvote").then(function(response){
+            if (response.ok)
+                return response.json()
+            return Promise.reject(response)
+        }).then(function(data){
+            // here you write entire logic of displaying the data
+            if (data.status == true){
+                document.getElementById("vote_alert_box").innerHTML = `
+                    <span class="col-lg-12 alert alert-success">Downvoted</span>
+                `
+                setTimeout(function(){
+                    document.getElementById("vote_alert_box").innerHTML =  ""
+                },2000);
+
+            }else{
+                alert("something went wrong!")
+            }
+
+        }).catch(function(err){
+            console.log(err)
+        })
+        return false;
     }
 </script>
 

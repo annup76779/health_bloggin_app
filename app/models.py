@@ -60,6 +60,7 @@ class ReplyOfComments(models.Model):
 
 
 class Vote(models.Model):
+    # it is advised to use tuple instead of dict and list.
     VOTE_TYPE = (
             ("upvote", "Upvote"),
             ("downvote", "Downvote"),
